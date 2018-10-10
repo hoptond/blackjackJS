@@ -17,6 +17,7 @@ document.querySelectorAll('.deal').forEach(function (elem) {
         })
         var points = getPoints(hand)
         elem.parentNode.getElementsByTagName('h2')[0].textContent = "Player " + elem.parentNode.dataset.pid + ": " + points
+        //TODO: display winners and losers with text in a seperate div
         if(points > 21) {
             elem.parentNode.getElementsByTagName('h2')[0].style = 'color: red'
             hideAllButtons()
@@ -33,6 +34,7 @@ document.querySelectorAll('.stick').forEach(function (elem) {
         elem.addEventListener('click', function (e) {
             elem.parentNode.getElementsByTagName('h2')[0].style = 'color: blue'
             hideButtons(elem.parentNode.dataset.pid)
+            //TODO: have this remove the stick button in the other player
         })
     }
 )
