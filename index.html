@@ -2,7 +2,6 @@
 <html>
 <head></head>
 <title>BlackJack sans Hookers</title>
-<link rel="stylesheet" href="style.css">
 </html>
 <body>
 <h1>BLACKJACK SANS HOOKERS</h1>
@@ -10,18 +9,15 @@
     <div class ="player 1">
         <h2>Player 1</h2>
         <div>
-            <?php $aScore = Deal()?>
         </div>
     </div>
     <div class ="player 2">
         <h2>Player 2</h2>
-        <?php $bScore = Deal()?>
     </div>
 </div>
-<div class ="winner"><?php echo displayWinner($aScore, $bScore)?></div>
+<div class ="winner"></div>
 <button>
-    <?php
-
-        ?>
+    Deal
 </button>
+<script src="blackjack.js"></script>
 </body>

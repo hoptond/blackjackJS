@@ -1,24 +1,23 @@
+
+
+
 /*
  * Deals out cards until the score has been achieved or exceeded.
  *
  * @return int Returns the score the player ended up with.
  */
-function deal(): int {
-    $hand = array();
-    $deck = createDeck();
-    $score = 0;
-    while($score < 21) {
-        $key = array_rand($deck,1);
-        $card = $deck[$key];
-        $deck = removeCardFromDeck($deck, $card);
-        echo displayDrawnCard($card);
-        $hand = addCardToHand($hand, $card);
-        var_dump($hand);
-        echo '<br>';
-        $score = getPoints($hand);
-        echo $score . '<br>';
+function deal() {
+    var hand = []
+    var deck = createDeck()
+    var score = 0
+    while(score < 21) {
+        var card = deck[Math.floor(Math.random() * deck.length)];
+        deck = removeCardFromDeck(deck, card)
+        hand = addCardToHand(hand, card)
+        score = getPoints(hand)
     }
-    return $score;
+    console.log(hand)
+    return score;
 }
 
 /*
@@ -26,20 +25,36 @@ function deal(): int {
  *
  * @return array Returns the newly created deck as an array of Cards.
  */
-function createDeck(): array {
-    $deck = array();
-    $suits = array("Clubs", "Spades", "Hearts", "Diamonds");
-    foreach($suits as $suit) {
-        for($i = 2; $i < 11; $i++) {
-            $deck[] = $suit . "_" . $i;
+function createDeck() {
+    var deck = []
+    var suits = ["Clubs", "Spades", "Hearts", "Diamonds"]
+    suits.forEach(function(suit) {
+        for(var i = 2; i < 11; i++) {
+            deck.push(suit + "_" + i);
         }
-        $deck[] = $suit . "_" ."Ace";
-        $deck[] = $suit . "_" . "King";
-        $deck[] = $suit . "_" . "Queen";
-        $deck[] = $suit . "_" . "Jack";
+        deck.push(suit + "_" +"Ace")
+        deck.push(suit + "_" + "King")
+        deck.push(suit + "_" + "Queen")
+        deck.push(suit + "_" + "Jack")
+    })
+    shuffle(deck)
+    return deck
+}
+
+
+/*
+ * Shuffles an array and returns it.
+ * @param array An array containing the items.
+ */
+function shuffle(a) {
+    var j, x, i
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1))
+        x = a[i]
+        a[i] = a[j]
+        a[j] = x
     }
-    shuffle($deck);
-    return $deck;
+    return a
 }
 
 /*
@@ -50,52 +65,54 @@ function createDeck(): array {
  *
  * @return array Returns the the deck with the newly added card.
  */
-function addCardToHand(array $deck, $card) : array {
-    if (count($deck) == 0) {
-        echo 'inserted a card into the hand at position 0, hand was empty' . '<br>';
-        $deck[] = $card;
-        return $deck;
+function addCardToHand(deck, card) {
+    if (deck.length == 0) {
+        //echo 'inserted a card into the hand at position 0, hand was empty' . '<br>';
+        deck.push(card)
+        return deck
     }
-    $insertValue = getCardValue($card);
-    for ($i = 0; $i < count($deck); $i++) {
-        if ($insertValue < getCardValue($deck[$i])) {
-            $insert = array($card);
-            array_splice($deck, $i, 0, $insert);
-            echo 'inserted a card at position ' . $i . ', hand is now:'. '<br>';
-            return $deck;
+    var insertValue = getCardValue(card)
+    for (var i = 0; i < deck.length; i++) {
+        if (insertValue < getCardValue(deck[i])) {
+            deck.splice(i, 0, card)
+            //echo 'inserted a card at position ' . i . ', hand is now:'. '<br>';
+            return deck
         }
     }
-    echo 'inserted a card at end of collection, as the value is the highest so far:'. '<br>';
-    $deck[] = $card;
-    return $deck;
+    //echo 'inserted a card at end of collection, as the value is the highest so far:'. '<br>';
+    deck.push(card)
+    return deck;
 }
 
 /*
  * This function removes the given card from a deck.
  *
- * @param $deck The targeted deck of cards.
- * @param $card The targeted card to remove.
+ * @param deck The targeted deck of cards.
+ * @param card The targeted card to remove.
  *
  * @return array Returns the deck, sans the card that was removed.
  */
-function removeCardFromDeck(array $deck, $card) : array {
-    //there is probably a nicer way of doing this
-    if (in_array($card, $deck)) {
-        unset($deck[array_search($card, $deck)]);
+function removeCardFromDeck(deck, card) {
+    if (deck.includes(card)) {
+        for(var i = 0; i < deck.length; i++) {
+            if(deck[i] === card) {
+                deck.splice(i, 1)
+            }
+        }
     }
-    return $deck;
+    return deck;
 }
 
 /*
  * Echoes the current string in a format the end user can understand.
  *
- * @param string $card The card to be displayed;
+ * @param string card The card to be displayed;
  *
  * @return string Returns the string.
  */
-function displayDrawnCard($card) : string {
-    $values = explode("_", $card);
-    return "Drew the " . $values[1] . " of " . $values[0] . "<br>";
+function displayDrawnCard(card) {
+    var values = card.split('_')
+    return "Drew the " + values[1] + " of " + values[0] + "<br>";
 }
 
 /*
@@ -105,35 +122,35 @@ function displayDrawnCard($card) : string {
  *
  * @return int The total value of the player's deck.
  */
-function getPoints(array $playerDeck): int {
-    $score = 0;
-    foreach($playerDeck as $card) {
-        $score += getCardValue($card, $score);
-    }
-    return $score;
+function getPoints(playerDeck) {
+    score = 0;
+    playerDeck.forEach(function(card) {
+        score = parseInt(score) + parseInt(getCardValue(card, score))
+    })
+    return score;
 }
 /*
  * This function gets the value of a specific card. If it is a number card, the value is the number of a card. If it is a special card,
  * the value is either 11 if it is an Ace or 10 if it is not.
  *
- * @param string $card The card to get the value of.
- * @param int $score The current running score. By default, this score is 0.
+ * @param string card The card to get the value of.
+ * @param int score The current running score. By default, this score is 0.
  *
  * @return int Returns the value of the card.
  */
-function getCardValue($card, $score = 0): int {
+function getCardValue(card, score = 0) {
     //gets the initial value of this card by exploding the string and taking the second value, which is either a number or a string
-    $val = explode("_", $card)[1];
-    if (is_numeric($val)) {
-        return (int)$val;
+    var val = card.split("_")[1];
+    if (!isNaN(val)) {
+        return parseInt(val);
     } else {
-        if ($val === "Ace") {
-            if ($score >= 11) {
-                return 1;
+        if (val === "Ace") {
+            if (score >= 11) {
+                return 1
             }
-            return 11;
+            return 11
         } else {
-            return 10;
+            return 10
         }
     }
 }
@@ -142,28 +159,27 @@ function getCardValue($card, $score = 0): int {
 /*
  * This outputs a string to our HTML to inform the player who won.
  *
- * @param int $aScore The first player's score.
- * @param int $bScore The second player's score.
+ * @param int aScore The first player's score.
+ * @param int bScore The second player's score.
  *
  * @return string Returns the informational string.
  */
-function displayWinner($aScore, $bScore): string {
-    if ($aScore > 21) {
+function displayWinner(aScore, bScore) {
+    if (aScore > 21) {
         return "<br><br>Player one has lost!";
     }
-    if ($aScore == 21) {
-        if ($bScore == 21) {
-            return "<br><br>" . "A draw. Everyone loses!";
+    if (aScore == 21) {
+        if (bScore == 21) {
+            return "<br><br>" + "A draw. Everyone loses!";
         } else {
             return "<br><br>Player one has won!";
         }
     }
-    if ($bScore == 21) {
+    if (bScore == 21) {
         return "<br><br>Player two has won!";
     }
-    if ($bScore > 21) {
+    if (bScore > 21) {
         return "<br><br>Player two has lost!";
     }
     return "<br><br>Continue drawing cards...";
 }
-    ?>
