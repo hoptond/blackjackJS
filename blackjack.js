@@ -1,25 +1,39 @@
-document.querySelector('button').addEventListener( 'click', function(e) {
-    console.log('YES!')
-})
+var deck = createDeck()
+var hands = []
+hands.push([])
+hands.push([])
+updateDeckDisplay();
 
+
+
+document.querySelectorAll('.player button').forEach(function (elem) {
+    elem.addEventListener('click', function(e) {
+        var hand = hands[parseInt(elem.parentNode.dataset.pid) - 1]
+        deal(hand, deck)
+        var list = elem.parentNode.getElementsByTagName('ul')[0]
+        list.innerHTML = "";
+        hand.forEach(function(e) {
+            list.innerHTML += '<li>' + e.rank  + ' of ' + e.suit + '</li>'
+        })
+        updateDeckDisplay()
+    })
+    }
+)
+
+
+function updateDeckDisplay() {
+    document.querySelector('.deckinfo').textContent = "Cards in dealer's deck: " + deck.length;
+}
 
 /*
- * Deals out cards until the score has been achieved or exceeded.
+ * Deals out a single card to the player's deck from the given hand.
  *
  * @return int Returns the score the player ended up with.
  */
-function deal() {
-    var hand = []
-    var deck = createDeck()
-    var score = 0
-    while(score < 21) {
-        var card = deck[Math.floor(Math.random() * deck.length)];
-        deck = removeCardFromDeck(deck, card)
-        hand = addCardToHand(hand, card)
-        score = getPoints(hand)
-    }
-    console.log(hand)
-    return score;
+function deal(hand, deck) {
+    var card = deck[Math.floor(Math.random() * deck.length)];
+    deck = removeCardFromDeck(deck, card)
+    hand = addCardToHand(hand, card)
 }
 
 /*
