@@ -15,11 +15,29 @@ document.querySelectorAll('.player button').forEach(function (elem) {
         hand.forEach(function(e) {
             list.innerHTML += '<li>' + e.rank  + ' of ' + e.suit + '</li>'
         })
+        var points = getPoints(hand)
+        elem.parentNode.getElementsByTagName('h2')[0].textContent = "Player " + elem.parentNode.dataset.pid + ": " + points
+        if(points > 21) {
+            elem.parentNode.getElementsByTagName('h2')[0].style = 'color: red'
+            hideButtons()
+        } else if(points === 21) {
+            elem.parentNode.getElementsByTagName('h2')[0].style = 'color: green'
+            hideButtons()
+        }
         updateDeckDisplay()
     })
     }
 )
 
+
+
+
+function hideButtons () {
+    document.querySelectorAll('.player button').forEach(function (elem) {
+        elem.style = 'display: none'
+    })
+
+}
 
 function updateDeckDisplay() {
     document.querySelector('.deckinfo').textContent = "Cards in dealer's deck: " + deck.length;
