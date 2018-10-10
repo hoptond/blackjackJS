@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head></head>
-<title>BlackJack sans Hookers</title>
+<head>
+    <title>BlackJack sans Hookers</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 </html>
 <body>
-<h1>BLACKJACK SANS HOOKERS</h1>
-<div class="wrapper">
-    <div>
-        <p class="deckinfo"></p>
+    <div class="wrapper">
+        <h1>BLACKJACK SANS HOOKERS</h1>
+        <div>
+            <p class="deckinfo"></p>
+        </div>
+        <div data-pid="1" class ="player left">
+            <h2>Player 1</h2>
+            <button class="deal">Deal</button>
+            <button class="stick">Stick</button>
+            <ul></ul>
+        </div>
+        <div data-pid="2" class ="player right">
+            <h2>Player 2</h2>
+            <button class="deal">Deal</button>
+            <button class="stick">Stick</button>
+            <ul></ul>
+        </div>
     </div>
-    <div data-pid="1" class ="player">
-        <h2>Player 1</h2>
-        <button>Deal</button>
-        <ul></ul>
-        <p></p>
-    </div>
-    <div data-pid="2" class ="player">
-        <h2>Player 2</h2>
-        <button>Deal</button>
-        <ul></ul>
-        <p></p>
-    </div>
-</div>
-<div class ="winner"></div>
-<script src="blackjack.js"></script>
+    <div class ="winner"></div>
+    <script src="blackjack.js"></script>
 </body>

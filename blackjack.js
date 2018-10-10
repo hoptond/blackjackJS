@@ -6,7 +6,7 @@ updateDeckDisplay();
 
 
 
-document.querySelectorAll('.player button').forEach(function (elem) {
+document.querySelectorAll('.deal').forEach(function (elem) {
     elem.addEventListener('click', function(e) {
         var hand = hands[parseInt(elem.parentNode.dataset.pid) - 1]
         deal(hand, deck)
@@ -19,25 +19,41 @@ document.querySelectorAll('.player button').forEach(function (elem) {
         elem.parentNode.getElementsByTagName('h2')[0].textContent = "Player " + elem.parentNode.dataset.pid + ": " + points
         if(points > 21) {
             elem.parentNode.getElementsByTagName('h2')[0].style = 'color: red'
-            hideButtons()
+            hideAllButtons()
         } else if(points === 21) {
             elem.parentNode.getElementsByTagName('h2')[0].style = 'color: green'
-            hideButtons()
+            hideAllButtons()
         }
         updateDeckDisplay()
     })
     }
 )
 
+document.querySelectorAll('.stick').forEach(function (elem) {
+        elem.addEventListener('click', function (e) {
+            elem.parentNode.getElementsByTagName('h2')[0].style = 'color: blue'
+            hideButtons(elem.parentNode.dataset.pid)
+        })
+    }
+)
 
 
 
-function hideButtons () {
+
+function hideButtons(pid) {
+    document.querySelectorAll('.player button').forEach(function (elem) {
+        if(elem.parentNode.dataset.pid == pid) {
+            elem.style = 'display: none'
+        }
+    })
+}
+
+function hideAllButtons() {
     document.querySelectorAll('.player button').forEach(function (elem) {
         elem.style = 'display: none'
     })
-
 }
+
 
 function updateDeckDisplay() {
     document.querySelector('.deckinfo').textContent = "Cards in dealer's deck: " + deck.length;
