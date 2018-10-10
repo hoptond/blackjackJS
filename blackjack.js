@@ -1,4 +1,6 @@
-
+document.querySelector('button').addEventListener( 'click', function(e) {
+    console.log('YES!')
+})
 
 
 /*
@@ -30,12 +32,12 @@ function createDeck() {
     var suits = ["Clubs", "Spades", "Hearts", "Diamonds"]
     suits.forEach(function(suit) {
         for(var i = 2; i < 11; i++) {
-            deck.push(suit + "_" + i);
+            deck.push(card = {suit:suit, rank:i})
         }
-        deck.push(suit + "_" +"Ace")
-        deck.push(suit + "_" + "King")
-        deck.push(suit + "_" + "Queen")
-        deck.push(suit + "_" + "Jack")
+        deck.push(card = {suit:suit, rank:"Ace"})
+        deck.push(card = {suit:suit, rank:"King"})
+        deck.push(card = {suit:suit, rank:"Queen"})
+        deck.push(card = {suit:suit, rank:"Jack"})
     })
     shuffle(deck)
     return deck
@@ -139,12 +141,10 @@ function getPoints(playerDeck) {
  * @return int Returns the value of the card.
  */
 function getCardValue(card, score = 0) {
-    //gets the initial value of this card by exploding the string and taking the second value, which is either a number or a string
-    var val = card.split("_")[1];
-    if (!isNaN(val)) {
-        return parseInt(val);
+    if (!isNaN(card.rank)) {
+        return parseInt(card.rank);
     } else {
-        if (val === "Ace") {
+        if (card.rank === "Ace") {
             if (score >= 11) {
                 return 1
             }
