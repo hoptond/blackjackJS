@@ -188,7 +188,7 @@ function getPoints(playerDeck) {
  *
  * @return int Returns the value of the card.
  */
-function getCardValue(card, score = 0) {
+function getCardValue(card, score) {
     if (!isNaN(card.rank)) {
         return parseInt(card.rank);
     } else {
