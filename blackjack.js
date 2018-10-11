@@ -30,7 +30,7 @@ document.querySelectorAll('.stick').forEach(function (elem) {
         elem.addEventListener('click', function (e) {
             elem.parentNode.getElementsByTagName('h2')[0].style = 'color: blue'
             hideButtons(elem.parentNode.dataset.pid)
-            //TODO: have this remove the stick button in the other player
+            hideButtonsOfType('stick')
         })
     }
 )
@@ -61,11 +61,40 @@ function updateCardList(elem, hand) {
     var list = elem.parentNode.getElementsByTagName('ul')[0]
     list.innerHTML = "";
     for(var i = 0; i < hand.length; i++) {
-        list.innerHTML += '<li>' + hand[i].rank  + ' of ' + hand[i].suit + ': ' + getCardValue(hand[i], 0) + '</li>'
+        list.innerHTML += '<li ' + getCardColour(hand[i].suit) + ' data-suit="' + hand[i].suit + '" data-rank="' + hand[i].rank + '">' +
+            '<p class="topleft">' + getRankCharacter(hand[i].rank) + '</p>' +
+            '<p>' + getSuitCharacter(hand[i].suit) +'</p>' +
+            '<p class="bottomright">' + getRankCharacter(hand[i].rank) + '</p>' +
+            '</li>'
         if(hand[i].rank === 'Ace') {
             list.innerHTML += '<button data-index="' + i + '" class="switch">Switch</button>'
         }
     }
+}
+
+function getCardColour(suit) {
+    if (suit == 'Diamonds' || suit == 'Hearts') {
+        return 'class="redcard"'
+    }
+    console.log(suit)
+    return 'class="blackcard"'
+}
+
+function getSuitCharacter(suit) {
+    switch(suit) {
+        case 'Diamonds': return "&diams;"
+        case 'Spades': return "&spades;"
+        case 'Hearts': return "&hearts;"
+        default: return "&clubs;"
+    }
+}
+
+function getRankCharacter(rank) {
+    console.log(rank)
+    if(isNaN(rank)) {
+        return rank.substring(0,1).toUpperCase()
+    }
+    return parseInt(rank)
 }
 
 function updateScore(pid, points) {
@@ -77,6 +106,20 @@ function updateScore(pid, points) {
 function hideButtons(pid) {
     document.querySelectorAll('.player button').forEach(function (elem) {
         if(elem.parentNode.dataset.pid == pid) {
+            elem.style = 'display: none'
+        }
+    })
+}
+
+function bust(score, hand) {
+    hand.forEach(function(card) {
+
+    })
+}
+
+function hideButtonsOfType(buttonclass) {
+    document.querySelectorAll('.player button').forEach(function (elem) {
+        if(elem.classList.contains(buttonclass)) {
             elem.style = 'display: none'
         }
     })
