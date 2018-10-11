@@ -36,14 +36,9 @@ document.querySelectorAll('.stick').forEach(function (elem) {
 document.querySelectorAll('ul').forEach(function (elem) {
         elem.addEventListener('click', function (e) {
             if(e.target.nodeName != 'BUTTON') {
-                console.log(e.target)
-                console.log('this tag is not a button so we get outta here')
                 return
             }
-            console.log('entered function')
             var handIndex = elem.parentNode.dataset.pid - 1
-            console.log(handIndex)
-            console.log(e.target.dataset.index)
             if(hands[handIndex][e.target.dataset.index].rank === 'Ace') {
                 var card = hands[handIndex][e.target.dataset.index]
                 card.switched = !card.switched
@@ -77,7 +72,6 @@ function getCardColour(suit) {
     if (suit == 'Diamonds' || suit == 'Hearts') {
         return 'class="redcard"'
     }
-    console.log(suit)
     return 'class="blackcard"'
 }
 
@@ -91,7 +85,6 @@ function getSuitCharacter(suit) {
 }
 
 function getRankCharacter(rank) {
-    console.log(rank)
     if(isNaN(rank)) {
         return rank.substring(0,1).toUpperCase()
     }
@@ -261,15 +254,26 @@ function determineWinner() {
     for(var i = 0; i < hands.length; i++) {
         var points = getPoints(hands[i])
         if (points == 21) {
-            hideAllButtons();
-            document.getElementById('winner').textContent = 'Player ' + parseInt(i + 1) + ' has won!'
+            displayWinner(parseInt(i + 1))
+            break
         } else if(bust(points, hands[i])) {
             console.log('player is bust')
-            hideAllButtons();
-            document.getElementById('winner').textContent = 'Player ' + parseInt((1 - i) + 1) + ' has won!'
+            displayWinner(parseInt((1 - i) + 1))
+            break
+        }
+        if(stick[i]) {
+            if(points > getPoints(hands[i - i])) {
+                displayWinner(parseInt((1 - i) + 1))
+                break
+            } else {
+                displayWinner(parseInt(i + 1))
+                break
+            }
         }
     }
 }
+
+
 
 function hasCard(hand, suit, rank) {
     hand.forEach( function(card) {
@@ -280,30 +284,7 @@ function hasCard(hand, suit, rank) {
 }
 
 
-/*
- * This outputs a string to our HTML to inform the player who won.
- *
- * @param int aScore The first player's score.
- * @param int bScore The second player's score.
- *
- * @return string Returns the informational string.
- */
-function displayWinner(aScore, bScore) {
-    if (aScore > 21) {
-        return "<br><br>Player one has lost!";
-    }
-    if (aScore == 21) {
-        if (bScore == 21) {
-            return "<br><br>" + "A draw. Everyone loses!";
-        } else {
-            return "<br><br>Player one has won!";
-        }
-    }
-    if (bScore == 21) {
-        return "<br><br>Player two has won!";
-    }
-    if (bScore > 21) {
-        return "<br><br>Player two has lost!";
-    }
-    return "<br><br>Continue drawing cards...";
+function displayWinner(number) {
+    hideAllButtons();
+    document.getElementById('winner').textContent = 'Player ' + number + ' has won!'
 }
