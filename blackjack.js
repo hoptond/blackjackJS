@@ -10,13 +10,9 @@ document.querySelectorAll('.deal').forEach(function (elem) {
     elem.addEventListener('click', function(e) {
         var hand = hands[parseInt(elem.parentNode.dataset.pid) - 1]
         deal(hand, deck)
-        var list = elem.parentNode.getElementsByTagName('ul')[0]
-        list.innerHTML = "";
-        hand.forEach(function(e) {
-            list.innerHTML += '<li>' + e.rank  + ' of ' + e.suit + '</li>'
-        })
+        updateCardList(elem, hand)
         var points = getPoints(hand)
-        elem.parentNode.getElementsByTagName('h2')[0].textContent = "Player " + elem.parentNode.dataset.pid + ": " + points
+        updateScore(elem.parentNode.dataset.pid, points)
         //TODO: display winners and losers with text in a seperate div
         if(points > 21) {
             elem.parentNode.getElementsByTagName('h2')[0].style = 'color: red'
@@ -40,6 +36,42 @@ document.querySelectorAll('.stick').forEach(function (elem) {
 )
 
 
+document.querySelectorAll('ul').forEach(function (elem) {
+        elem.addEventListener('click', function (e) {
+            if(e.target.nodeName != 'BUTTON') {
+                console.log(e.target)
+                console.log('this tag is not a button so we get outta here')
+                return
+            }
+            console.log('entered function')
+            var handIndex = elem.parentNode.dataset.pid - 1
+            console.log(handIndex)
+            console.log(e.target.dataset.index)
+            if(hands[handIndex][e.target.dataset.index].rank === 'Ace') {
+                var card = hands[handIndex][e.target.dataset.index]
+                card.switched = !card.switched
+                updateScore(handIndex + 1, getPoints(hands[handIndex]))
+                updateCardList(elem, hands[handIndex])
+            }
+        })
+    }
+)
+
+function updateCardList(elem, hand) {
+    var list = elem.parentNode.getElementsByTagName('ul')[0]
+    list.innerHTML = "";
+    for(var i = 0; i < hand.length; i++) {
+        list.innerHTML += '<li>' + hand[i].rank  + ' of ' + hand[i].suit + ': ' + getCardValue(hand[i], 0) + '</li>'
+        if(hand[i].rank === 'Ace') {
+            list.innerHTML += '<button data-index="' + i + '" class="switch">Switch</button>'
+        }
+    }
+}
+
+function updateScore(pid, points) {
+    var header = document.getElementsByClassName('player')[pid - 1]
+    header.children[0].textContent = "Player " + pid + ": " + points
+}
 
 
 function hideButtons(pid) {
@@ -82,17 +114,16 @@ function createDeck() {
     var suits = ["Clubs", "Spades", "Hearts", "Diamonds"]
     suits.forEach(function(suit) {
         for(var i = 2; i < 11; i++) {
-            deck.push(card = {suit:suit, rank:i})
+            deck.push(card = {suit:suit, rank:i, switched:false})
         }
-        deck.push(card = {suit:suit, rank:"Ace"})
-        deck.push(card = {suit:suit, rank:"King"})
-        deck.push(card = {suit:suit, rank:"Queen"})
-        deck.push(card = {suit:suit, rank:"Jack"})
+        deck.push(card = {suit:suit, rank:"Ace", switched:false})
+        deck.push(card = {suit:suit, rank:"King", switched:false})
+        deck.push(card = {suit:suit, rank:"Queen", switched:false})
+        deck.push(card = {suit:suit, rank:"Jack", switched:false})
     })
     shuffle(deck)
     return deck
 }
-
 
 /*
  * Shuffles an array and returns it.
@@ -190,12 +221,12 @@ function getPoints(playerDeck) {
  *
  * @return int Returns the value of the card.
  */
-function getCardValue(card, score) {
+function getCardValue(card) {
     if (!isNaN(card.rank)) {
         return parseInt(card.rank);
     } else {
         if (card.rank === "Ace") {
-            if (score >= 11) {
+            if (card.switched) {
                 return 1
             }
             return 11
