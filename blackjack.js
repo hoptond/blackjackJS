@@ -189,6 +189,9 @@ function shuffle(a) {
  */
 function addCardToHand(deck, card) {
     deck.push(card)
+    if(card.rank == 'Ace' && getPoints(deck) > 21) {
+        card.switched = true
+    }
     return deck;
 }
 
