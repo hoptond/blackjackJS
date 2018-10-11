@@ -2,6 +2,9 @@ var deck = createDeck()
 var hands = []
 hands.push([])
 hands.push([])
+var stick = []
+stick.push(false)
+stick.push(false)
 updateDeckDisplay();
 
 
@@ -11,16 +14,9 @@ document.querySelectorAll('.deal').forEach(function (elem) {
         var hand = hands[parseInt(elem.parentNode.dataset.pid) - 1]
         deal(hand, deck)
         updateCardList(elem, hand)
-        var points = getPoints(hand)
-        updateScore(elem.parentNode.dataset.pid, points)
+        updateScore(elem.parentNode.dataset.pid, getPoints(hand))
         //TODO: display winners and losers with text in a seperate div
-        if(points > 21) {
-            elem.parentNode.getElementsByTagName('h2')[0].style = 'color: red'
-            hideAllButtons()
-        } else if(points === 21) {
-            elem.parentNode.getElementsByTagName('h2')[0].style = 'color: green'
-            hideAllButtons()
-        }
+        determineWinner()
         updateDeckDisplay()
     })
     }
@@ -31,6 +27,7 @@ document.querySelectorAll('.stick').forEach(function (elem) {
             elem.parentNode.getElementsByTagName('h2')[0].style = 'color: blue'
             hideButtons(elem.parentNode.dataset.pid)
             hideButtonsOfType('stick')
+            stick[parseInt(elem.parentNode.dataset.pid) - 1] = true
         })
     }
 )
@@ -57,10 +54,14 @@ document.querySelectorAll('ul').forEach(function (elem) {
     }
 )
 
+
+
+
 function updateCardList(elem, hand) {
     var list = elem.parentNode.getElementsByTagName('ul')[0]
     list.innerHTML = "";
     for(var i = 0; i < hand.length; i++) {
+        //TODO: replace this crap with createElement()
         list.innerHTML += '<li ' + getCardColour(hand[i].suit) + ' data-suit="' + hand[i].suit + '" data-rank="' + hand[i].rank + '">' +
             '<p class="topleft">' + getRankCharacter(hand[i].rank) + '</p>' +
             '<p>' + getSuitCharacter(hand[i].suit) +'</p>' +
@@ -112,9 +113,11 @@ function hideButtons(pid) {
 }
 
 function bust(score, hand) {
-    hand.forEach(function(card) {
-
-    })
+    if(score > 21) {
+        //TODO: account for aces
+        return true
+    }
+    return false
 }
 
 function hideButtonsOfType(buttonclass) {
@@ -192,20 +195,6 @@ function shuffle(a) {
  * @return array Returns the the deck with the newly added card.
  */
 function addCardToHand(deck, card) {
-    if (deck.length == 0) {
-        //echo 'inserted a card into the hand at position 0, hand was empty' . '<br>';
-        deck.push(card)
-        return deck
-    }
-    var insertValue = getCardValue(card)
-    for (var i = 0; i < deck.length; i++) {
-        if (insertValue < getCardValue(deck[i])) {
-            deck.splice(i, 0, card)
-            //echo 'inserted a card at position ' . i . ', hand is now:'. '<br>';
-            return deck
-        }
-    }
-    //echo 'inserted a card at end of collection, as the value is the highest so far:'. '<br>';
     deck.push(card)
     return deck;
 }
@@ -227,18 +216,6 @@ function removeCardFromDeck(deck, card) {
         }
     }
     return deck;
-}
-
-/*
- * Echoes the current string in a format the end user can understand.
- *
- * @param string card The card to be displayed;
- *
- * @return string Returns the string.
- */
-function displayDrawnCard(card) {
-    var values = card.split('_')
-    return "Drew the " + values[1] + " of " + values[0] + "<br>";
 }
 
 /*
@@ -277,6 +254,29 @@ function getCardValue(card) {
             return 10
         }
     }
+}
+
+
+function determineWinner() {
+    for(var i = 0; i < hands.length; i++) {
+        var points = getPoints(hands[i])
+        if (points == 21) {
+            hideAllButtons();
+            document.getElementById('winner').textContent = 'Player ' + parseInt(i + 1) + ' has won!'
+        } else if(bust(points, hands[i])) {
+            console.log('player is bust')
+            hideAllButtons();
+            document.getElementById('winner').textContent = 'Player ' + parseInt((1 - i) + 1) + ' has won!'
+        }
+    }
+}
+
+function hasCard(hand, suit, rank) {
+    hand.forEach( function(card) {
+
+        }
+    )
+    return false
 }
 
 
