@@ -98,7 +98,7 @@ function getCardColour(suit) {
     if (suit == 'Diamonds' || suit == 'Hearts') {
         return 'redcard'
     }
-    return 'blackcard"'
+    return 'blackcard'
 }
 
 function getSuitCharacter(suit) {
