@@ -8,6 +8,10 @@ stick.push(false)
 updateDeckDisplay();
 
 
+var lastCard;
+var lastPlayer;
+var lastCardID
+
 
 document.querySelectorAll('.deal').forEach(function (elem) {
     elem.addEventListener('click', function(e) {
@@ -15,7 +19,6 @@ document.querySelectorAll('.deal').forEach(function (elem) {
         deal(hand, deck)
         updateCardList(elem, hand)
         updateScore(elem.parentNode.dataset.pid, getPoints(hand))
-        //TODO: display winners and losers with text in a seperate div
         determineWinner()
         updateDeckDisplay()
     })
@@ -31,7 +34,6 @@ document.querySelectorAll('.stick').forEach(function (elem) {
         })
     }
 )
-
 
 document.querySelectorAll('ul').forEach(function (elem) {
         elem.addEventListener('click', function (e) {
@@ -49,30 +51,54 @@ document.querySelectorAll('ul').forEach(function (elem) {
     }
 )
 
-
-
+function cardSlide() {
+    if(lastPlayer == 1) {
+        lastCard.style.left - 1;
+    } else {
+        lastCard.style.left + 1
+    }
+    if(lastCard.style.left == 0) {
+        cancelAnimationFrame(lastCardID)
+    }
+}
 
 function updateCardList(elem, hand) {
     var list = elem.parentNode.getElementsByTagName('ul')[0]
-    list.innerHTML = "";
-    for(var i = 0; i < hand.length; i++) {
-        //TODO: replace this crap with createElement()
-        list.innerHTML += '<li ' + getCardColour(hand[i].suit) + ' data-suit="' + hand[i].suit + '" data-rank="' + hand[i].rank + '">' +
-            '<p class="topleft">' + getRankCharacter(hand[i].rank) + '</p>' +
-            '<p>' + getSuitCharacter(hand[i].suit) +'</p>' +
-            '<p class="bottomright">' + getRankCharacter(hand[i].rank) + '</p>' +
-            '</li>'
-        if(hand[i].rank === 'Ace') {
-            list.innerHTML += '<button data-index="' + i + '" class="switch">Switch</button>'
-        }
+    var displayCard = document.createElement('li')
+    var i = hand.length - 1;
+    displayCard.dataset['suit'] = hand[i].suit
+    displayCard.dataset['rank'] = hand[i].rank
+    displayCard.classList.add(getCardColour(hand[i].suit))
+    var topleft = document.createElement('p')
+    displayCard.append(topleft)
+    displayCard.children[0].classList.add('topleft')
+    displayCard.children[0].textContent = getRankCharacter(hand[i].rank)
+    var mid = document.createElement('p')
+    displayCard.append(mid)
+    displayCard.children[1].innerHTML = getSuitCharacter(hand[i].suit)
+    var bottomright = document.createElement('p')
+    displayCard.append(bottomright)
+    displayCard.children[2].classList.add('bottomright')
+    displayCard.children[2].textContent = getRankCharacter(hand[i].rank)
+    list.append(displayCard)
+    lastCard = displayCard;
+    lastPlayer = (elem.parentNode.dataset.pid) - 1
+    lastCardID = hand[i].id
+    // if(lastPlayer == 0)
+    //     displayCard.style.left = 1000
+    // if(lastPlayer == 0)
+    //     displayCard.style.left = 1000
+    // requestAnimationFrame(cardSlide)
+    if(hand[i].rank === 'Ace') {
+        list.innerHTML += '<button data-index="' + i + '" class="switch">Switch</button>'
     }
 }
 
 function getCardColour(suit) {
     if (suit == 'Diamonds' || suit == 'Hearts') {
-        return 'class="redcard"'
+        return 'redcard'
     }
-    return 'class="blackcard"'
+    return 'blackcard"'
 }
 
 function getSuitCharacter(suit) {
@@ -151,14 +177,20 @@ function deal(hand, deck) {
 function createDeck() {
     var deck = []
     var suits = ["Clubs", "Spades", "Hearts", "Diamonds"]
+    var cid = 0;
     suits.forEach(function(suit) {
         for(var i = 2; i < 11; i++) {
-            deck.push(card = {suit:suit, rank:i, switched:false})
+            deck.push(card = {suit:suit, rank:i, switched:false, id:cid})
+            cid++;
         }
-        deck.push(card = {suit:suit, rank:"Ace", switched:false})
-        deck.push(card = {suit:suit, rank:"King", switched:false})
-        deck.push(card = {suit:suit, rank:"Queen", switched:false})
-        deck.push(card = {suit:suit, rank:"Jack", switched:false})
+        deck.push(card = {suit:suit, rank:"Ace", switched:false, id:cid})
+        cid++;
+        deck.push(card = {suit:suit, rank:"King", switched:false, id:cid})
+        cid++;
+        deck.push(card = {suit:suit, rank:"Queen", switched:false, id:cid})
+        cid++;
+        deck.push(card = {suit:suit, rank:"Jack", switched:false, id:cid})
+        cid++;
     })
     shuffle(deck)
     return deck
