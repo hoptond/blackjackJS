@@ -52,14 +52,19 @@ document.querySelectorAll('ul').forEach(function (elem) {
 )
 
 function cardSlide() {
+    console.log('animating')
+    console.log(lastCard.style.left)
+    var modifier = -40;
     if(lastPlayer == 1) {
-        lastCard.style.left - 1;
-    } else {
-        lastCard.style.left + 1
+        modifier = modifier - (modifier * 2)
     }
-    if(lastCard.style.left == 0) {
+    lastCard.style.left = parseInt(lastCard.style.left.substring(0, lastCard.style.left.length - 2)) - modifier + 'px';
+    if(lastCard.style.left == '0px') {
+        console.log('stopping animation')
         cancelAnimationFrame(lastCardID)
+        return
     }
+    lastCardID = requestAnimationFrame(cardSlide)
 }
 
 function updateCardList(elem, hand) {
@@ -83,12 +88,11 @@ function updateCardList(elem, hand) {
     list.append(displayCard)
     lastCard = displayCard;
     lastPlayer = (elem.parentNode.dataset.pid) - 1
-    lastCardID = hand[i].id
-    // if(lastPlayer == 0)
-    //     displayCard.style.left = 1000
-    // if(lastPlayer == 0)
-    //     displayCard.style.left = 1000
-    // requestAnimationFrame(cardSlide)
+    if(lastPlayer == 0)
+        displayCard.style.left = '-1000px'
+    if(lastPlayer == 1)
+        displayCard.style.left = '1000px'
+    lastCardID = requestAnimationFrame(cardSlide)
     if(hand[i].rank === 'Ace') {
         list.innerHTML += '<button data-index="' + i + '" class="switch">Switch</button>'
     }
