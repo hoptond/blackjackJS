@@ -1,0 +1,70 @@
+.wrapper {
+    margin: auto;
+    width: 80%;
+    height: auto;
+    text-align: center;
+}
+
+.player{
+    margin: 0 8% 0 8%;
+    width: 360px;
+}
+
+.player ul {
+    padding-left: 10px;
+    list-style: none;
+}
+
+.blackcard {
+    color: black;
+}
+
+.redcard {
+    color: red;
+}
+
+.player li {
+    position: relative;
+    border: 1px solid black;
+    border-radius: 15px;
+    width: 100px;
+    height: 140px;
+    display: inline-block;
+}
+
+
+.player .topleft {
+    position: absolute;
+    top: 8%;
+    left: 8%;
+    font-size: 0.8rem;
+}
+
+.player .bottomright {
+    position: absolute;
+    top: 84%;
+    left: 84%;
+    font-size: 0.8rem;
+}
+
+li p {
+    position: absolute;
+    top: 30%;
+    left: 33%;
+    font-size: 3.5rem;
+    margin: 0 auto;
+}
+
+#winner {
+    width: 100%;
+}
+
+
+
+.left {
+    float:left;
+}
+
+.right {
+    float:right;
+}
