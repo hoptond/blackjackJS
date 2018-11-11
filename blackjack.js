@@ -37,30 +37,32 @@ document.querySelectorAll('.stick').forEach(function (elem) {
 
 document.querySelectorAll('ul').forEach(function (elem) {
         elem.addEventListener('click', function (e) {
-            if(e.target.nodeName != 'BUTTON') {
-                return
-            }
-            var handIndex = elem.parentNode.dataset.pid - 1
-            if(hands[handIndex][e.target.dataset.index].rank === 'Ace') {
-                var card = hands[handIndex][e.target.dataset.index]
-                card.switched = !card.switched
-                updateScore(handIndex + 1, getPoints(hands[handIndex]))
-                updateCardList(elem, hands[handIndex])
+            if(e.target.classlist.contains('switch')) {
+                var handIndex = elem.parentNode.dataset.pid - 1
+                if(hands[handIndex][e.target.dataset.index].rank === 'Ace') {
+                    console.log('switching card')
+                    if(!elem.classList.contains('switched')) {
+                        elem.classList.add('switched')
+                    } else {
+                        elem.classList.remove('switched')
+                    }
+                    var card = hands[handIndex][e.target.dataset.index]
+                    card.switched = !card.switched
+                    updateScore(handIndex + 1, getPoints(hands[handIndex]))
+                    updateCardList(elem, hands[handIndex])
+                }
             }
         })
     }
 )
 
 function cardSlide() {
-    console.log('animating')
-    console.log(lastCard.style.left)
-    var modifier = -40;
+    var modifier = -10
     if(lastPlayer == 1) {
         modifier = modifier - (modifier * 2)
     }
     lastCard.style.left = parseInt(lastCard.style.left.substring(0, lastCard.style.left.length - 2)) - modifier + 'px';
     if(lastCard.style.left == '0px') {
-        console.log('stopping animation')
         cancelAnimationFrame(lastCardID)
         return
     }
@@ -93,9 +95,6 @@ function updateCardList(elem, hand) {
     if(lastPlayer == 1)
         displayCard.style.left = '1000px'
     lastCardID = requestAnimationFrame(cardSlide)
-    if(hand[i].rank === 'Ace') {
-        list.innerHTML += '<button data-index="' + i + '" class="switch">Switch</button>'
-    }
 }
 
 function getCardColour(suit) {
