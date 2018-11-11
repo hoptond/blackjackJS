@@ -39,22 +39,25 @@ body {
 
 .player .topleft {
     position: absolute;
-    top: 8%;
-    left: 8%;
+    top: 4%;
+    left: 4%;
     font-size: 0.8rem;
+	transform: none;
 }
 
 .player .bottomright {
     position: absolute;
-    top: 84%;
-    left: 84%;
+    top: 96%;
+    left: 96%;
     font-size: 0.8rem;
+	transform: none;
+	transform: translate(-100%, -100%);
 }
 
 li p {
     position: absolute;
-    top: 30%;
-    left: 33%;
+    left: 50%;
+	transform: translate(-50%, 50%);
     font-size: 3.5rem;
     margin: 0 auto;
 }
