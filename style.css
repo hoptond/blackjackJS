@@ -50,7 +50,6 @@ body {
     top: 96%;
     left: 96%;
     font-size: 0.8rem;
-	transform: none;
 	transform: translate(-100%, -100%);
 }
 

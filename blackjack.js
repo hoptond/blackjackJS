@@ -57,7 +57,7 @@ document.querySelectorAll('ul').forEach(function (elem) {
 )
 
 function cardSlide() {
-    var modifier = -10
+    var modifier = -50
     if(lastPlayer == 1) {
         modifier = modifier - (modifier * 2)
     }
